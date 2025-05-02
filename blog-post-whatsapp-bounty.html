@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How I Found My First $3000 Bug Bounty in WhatsApp - Pradumon Sahani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a; /* Very dark background */
+            color: #e5e7eb; /* Light gray text */
+            line-height: 1.7;
+        }
+        /* Smooth scroll behavior (less relevant on blog page, but kept for consistency) */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Accent color */
+        .accent-color {
+            color: #ef4444; /* Red */
+        }
+        .bg-accent-color {
+             background-color: #ef4444; /* Red */
+        }
+        .border-accent-color {
+            border-color: #ef4444; /* Red */
+        }
+        .hover\:accent-color:hover {
+            color: #dc2626; /* Darker Red */
+        }
+        /* Basic Link Styling */
+        a:not(.btn) { /* Avoid styling buttons like text links */
+            color: #f87171; /* Lighter red for links */
+            text-decoration: none;
+            transition: color 0.2s ease, text-decoration 0.2s ease;
+        }
+        a:not(.btn):hover {
+            color: #ef4444; /* Standard red on hover */
+            text-decoration: underline;
+        }
+        /* Header Styling */
+        header {
+            border-bottom: 1px solid #1f2937; /* Slightly visible border */
+        }
+        /* Blog Content Styling */
+        .blog-content h1 {
+            font-size: 2.5rem; /* Slightly larger for main title */
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+         .blog-content h2 {
+            font-size: 1.875rem; /* 3xl */
+            font-weight: 700;
+            color: #ffffff;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #374151; /* Subtle separator */
+        }
+         .blog-content h3 {
+            font-size: 1.5rem; /* 2xl */
+            font-weight: 600;
+            color: #f3f4f6; /* Slightly off-white */
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+        .blog-content p {
+            margin-bottom: 1.25rem;
+            color: #d1d5db; /* Slightly dimmer text for paragraphs */
+        }
+        .blog-content ul, .blog-content ol {
+            margin-bottom: 1.25rem;
+            margin-left: 1.5rem;
+            color: #d1d5db;
+        }
+        .blog-content ul {
+            list-style-type: disc;
+        }
+        .blog-content ol {
+            list-style-type: decimal;
+        }
+        .blog-content li {
+            margin-bottom: 0.5rem;
+        }
+        .blog-content blockquote {
+            border-left: 4px solid #ef4444; /* Red border */
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #9ca3af; /* Muted text color */
+        }
+        .blog-content code:not(pre code) { /* Inline code */
+            background-color: #1f2937; /* Dark background */
+            color: #f87171; /* Reddish text */
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.875em; /* Slightly smaller */
+            font-family: monospace;
+        }
+        .blog-content pre { /* Code blocks */
+            background-color: #111827; /* Slightly darker than inline */
+            border: 1px solid #374151;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto; /* Allow scrolling for long lines */
+            font-size: 0.875rem;
+            color: #d1d5db; /* Default code text color */
+            white-space: pre; /* Preserve whitespace */
+        }
+        .blog-content pre code {
+            font-family: monospace;
+            background-color: transparent; /* Reset background */
+            padding: 0;
+            border-radius: 0;
+            font-size: inherit;
+            color: inherit; /* Inherit color from pre */
+            white-space: inherit; /* Inherit whitespace handling */
+        }
+        /* Footer Styling */
+        footer {
+            border-top: 1px solid #1f2937;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html#home" class="text-2xl font-bold text-white hover:accent-color tracking-wide">
+                PRADUMON <span class="accent-color">.</span>
+            </a>
+            <a href="index.html#blog" class="text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wider">
+                &larr; Back to Blog
+            </a>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12 md:py-16">
+        <article class="max-w-3xl mx-auto blog-content">
+
+            <h1>How I Found My First $3000 Bug Bounty in WhatsApp: A Tale of Calls, Code, and Persistence</h1>
+
+            <p class="text-lg text-gray-400 mb-6 border-b border-gray-700 pb-4">
+                Exploiting a Call Log Logic Flaw in WhatsApp's Missed Call Verification for a $3000 Reward.
+                <span class="block text-sm text-gray-500 mt-2">Posted on: May 2, 2025</span> </p>
+
+            <p>Hey everyone!</p>
+
+            <p>Today, I'm buzzing with excitement to share a story I've been eager to tell – the story of my very first paid bug bounty! After countless hours exploring, learning, and reporting, I finally hit a milestone: a <strong class="text-white font-semibold">$3000 reward from Meta</strong> for finding a security vulnerability in none other than WhatsApp.</p>
+
+            <p>It was a journey filled with technical challenges, late-night research, and crucial back-and-forth communication. Here’s how a simple call verification feature led to a significant discovery.</p>
+
+            <h2>Uncovering the Flaw: When is a Missed Call Not a Missed Call?</h2>
+
+            <p>You know how some apps offer to verify your phone number by giving you a quick missed call instead of sending an SMS? WhatsApp has this feature, often called "Flash Call" or "Missed Call Verification." The last few digits of the phone number calling you act as the code. If you grant WhatsApp permission to read your call logs, it can see this incoming call and log you in automatically. Pretty neat, right?</p>
+
+            <p>But while exploring this, a question popped into my head: <em>How strictly does WhatsApp check that call log entry? Does it know the call was actually received (incoming)? Or does it just look for the number?</em></p>
+
+            <p>I decided to test this with two devices:</p>
+            <ul>
+                <li><strong>Device 1 (My "Attacker" Phone):</strong> Trying to log into WhatsApp using the victim's number.</li>
+                <li><strong>Device 2 (The "Victim" Phone):</strong> Had the actual SIM card for the WhatsApp account.</li>
+            </ul>
+
+            <p>Here’s the trick I found:</p>
+            <ol>
+                <li>Start logging into WhatsApp on <strong>Device 1</strong> with the victim's number. Choose the "Missed Call Verification."</li>
+                <li><strong>Device 2</strong> gets the actual verification call from a specific WhatsApp number (let's say <code>+447873012345</code>).</li>
+                <li><strong>Here's the hack:</strong> On <strong>Device 1</strong>, immediately open the phone dialer and make an <em>outgoing</em> call to that same number (<code>+447873012345</code>). Hang up right away.</li>
+                <li><strong>Bingo!</strong> WhatsApp on Device 1 checked its call log, saw the number it expected (even though it was an outgoing call I just made), and thought, "Verification successful!" It logged me into the victim's account without needing any code.</li>
+            </ol>
+
+            <p>It turns out WhatsApp wasn't distinguishing between <em>incoming</em> verification calls and <em>outgoing</em> calls placed to the verification number in the call log.</p>
+
+
+            <h2>Reporting to Meta: The Back-and-Forth</h2>
+
+            <p>Finding the bug was one thing; getting it validated was another. I submitted my findings to Meta's Bug Bounty program on February 14, 2025 (Case: <code>122104195538762819</code>).</p>
+
+            <p>The initial stages involved automated replies and requests for more details. The security team, understandably, had trouble reproducing it at first and needed clarification on the exact steps and why the victim's SIM wasn't directly needed for the final exploit step on the attacker's device.</p>
+
+            <p>Clear communication and the PoC video were key here. After several exchanges, the Meta team successfully reproduced the issue and passed it on to their engineering team for a fix.</p>
+
+            <h2>A Twist: Severity, Automation, and Interesting Scenarios</h2>
+
+            <p>During the process, I started thinking bigger. The verification numbers seemed to follow a pattern (<code>+4478730XXXXX</code>). What if someone could automatically inject fake call log entries? Could they bypass verification on a massive scale without even needing the "outgoing call trick"? I shared this hypothesis with Meta.</p>
+
+            <p>Their response on March 26, 2025, was enlightening. They confirmed the fix for the original bug (making sure WhatsApp does check if the call was <em>incoming</em>) was rolling out. They also acknowledged the Flash Call number structure.</p>
+
+            <p>Initially, they mentioned that my specific exploit (requiring the timed outgoing call) fell below their bar for a monetary reward because it seemed hard to pull off reliably – needing knowledge of the victim's number and potentially needing to see their screen ("over-the-shoulder").</p>
+
+            <p>However, they were very interested in my idea about automated attacks:</p>
+            <blockquote>
+                "This scenario [Automated Account Hijacking] is very interesting to us... We encourage you to explore this direction... A successful exploitation through this approach would be considered very impactful..."
+                <br>- Meta Security
+            </blockquote>
+
+            <p>They even pointed me towards potential research paths like Google APIs or using ADB (Android Debug Bridge).</p>
+
+            <h2>Exploring the "What Ifs": Code and Limitations</h2>
+
+            <p>Meta's feedback pushed me to explore how an attacker might <em>automate</em> this or <em>inject</em> call logs, even though the original bug was being fixed.</p>
+
+            <h3>Google's CallLog API</h3>
+            <p>Looked promising, but writing to call logs is heavily restricted on modern Android versions for security reasons. Tough luck there without special permissions.</p>
+
+            <h3>ADB (Android Debug Bridge)</h3>
+            <p>Using developer tools, one could potentially pull the call log database (<code>calllog.db</code>), edit it manually or programmatically, and push it back onto the device. This is feasible, but requires prior physical access, USB debugging enabled, or some form of existing compromise.</p>
+
+            <h3>Termux Scripts</h3>
+            <p>I played around with scripts on Termux (a terminal emulator for Android) to see if I could rapidly make calls to try and hit the verification window automatically.</p>
+
+            <p>Here’s a snippet of a Python script to generate potential numbers based on the observed pattern:</p>
+            <pre><code class="language-python"># generate_numbers.py
+from itertools import product
+
+prefix = "+4478730" # Example prefix from analysis
+# Generate numbers like +447873000000 to +447873099999
+try:
+    with open("numbers.txt", "w") as f:
+        # Generate 5 digits (00000 to 99999)
+        for i in range(100000):
+             # Format the number to ensure 5 digits (e.g., 00001, 01234)
+            num_suffix = str(i).zfill(5)
+            number = prefix + num_suffix
+            f.write(number + "\n")
+    print("Generated numbers list (numbers.txt).")
+except Exception as e:
+    print(f"Error writing file: {e}")
+</code></pre>
+            <p><em>Self-correction: The original code snippet generated combinations which might not be efficient for a large range. A simple counter is likely better, as shown above.</em></p>
+
+            <p>And a conceptual Bash script using Termux:API to attempt calling them (more for automating the original exploit attempt, not injecting logs):</p>
+            
+            <pre><code class="language-bash"># call_numbers.sh (using Termux with Termux:API)
+#!/bin/bash
+
+if ! command -v termux-telephony-call &> /dev/null
+then
+    echo "Error: termux-telephony-call command not found."
+    echo "Please ensure Termux:API app is installed and setup."
+    exit 1
+fi
+
+if [ ! -f numbers.txt ]; then
+    echo "Error: numbers.txt not found. Generate it first."
+    exit 1
+fi
+
+while IFS= read -r number; do
+    echo "Trying call to $number..."
+    termux-telephony-call "$number" # Needs Termux:API app installed and permissions granted
+    # The call might start in the background. Need to hang up quickly.
+    # Automating hangup via Termux is complex and device-dependent.
+    # Manual intervention or a different approach might be needed.
+    sleep 2 # Brief pause between attempts
+done < numbers.txt
+
+echo "Finished attempts."
+</code></pre>
+            <p>My own device limitations made extensive testing difficult, and crucially, these methods wouldn't bypass the fixed verification, which now correctly checks for <em>incoming</em> calls. But exploring these potentials was a critical part of understanding the broader impact scenario that Meta found interesting.</p>
+
+            <h3>Root Access</h3>
+            <p>Of course, with full root access on an Android device, directly editing the call log SQLite database (often located at <code>/data/data/com.android.providers.contacts/databases/calllog.db</code>) would be trivial using command-line tools like <code>sqlite3</code>. However, obtaining root access is a significant prerequisite.</p>
+
+            <h2>The Reward and Lessons Learned</h2>
+
+            <p>Despite the initial assessment about the reward threshold for my specific manual exploit, Meta ultimately recognized the significance of the findings – the core logic flaw and the potential for broader impact I highlighted through the automation discussion. I was thrilled when they awarded a <strong class="text-white font-semibold">$3000 bounty!</strong></p>
+
+            <p>This entire experience taught me so much:</p>
+            <ul>
+                <li><strong>Persistence is Everything:</strong> Don't get discouraged by initial setbacks or requests for clarification. Keep refining your report and providing evidence.</li>
+                <li><strong>Clear Communication Wins:</strong> Explain your findings simply. Provide clear, step-by-step reproduction instructions and visual proof (videos/screenshots).</li>
+                <li><strong>Think Beyond the Obvious:</strong> Consider how a bug could be scaled, chained with other issues, or used in different scenarios. Potential impact matters greatly.</li>
+                <li><strong>Engage Constructively:</strong> Treat the security team as collaborators, not adversaries. Their feedback is invaluable for learning and improving your report.</li>
+                <li><strong>Celebrate Milestones:</strong> Getting that first paid bounty is a huge motivator! Acknowledge your progress.</li>
+            </ul>
+
+            <p>A massive thank you to the Meta Security team for their professionalism, responsiveness, and for running an excellent program that encourages researchers like me.</p>
+
+            <p>I'm already on the hunt for the next bug!</p>
+
+            <hr class="border-gray-700 my-8">
+
+            <p class="text-sm text-gray-500"><em>Disclaimer: The specific vulnerability discussed in this post was responsibly disclosed to Meta and has been fixed. This article is intended for educational and informational purposes only. Do not attempt to exploit vulnerabilities in systems you do not have explicit permission to test.</em></p>
+
+        </article>
+    </main>
+
+    <footer class="border-t border-gray-800 mt-16 bg-gray-900/50">
+        <div class="container mx-auto px-6 py-6 text-center">
+            <a href="index.html#home" class="text-xl font-bold text-white hover:accent-color tracking-wide mb-3 inline-block">
+                PRADUMON <span class="accent-color">.</span>
+            </a>
+            <p class="text-gray-500 text-sm mb-3">
+                Developer <span class="accent-color mx-1">&bull;</span> Security Researcher <span class="accent-color mx-1">&bull;</span> Tech Enthusiast
+            </p>
+            <p class="text-gray-600 text-xs">
+                 &copy; <span id="current-year"></span> Pradumon Sahani. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Set Current Year in Footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // NOTE: Removed the basic JS syntax highlighting to prevent code corruption.
+        // Consider using a dedicated library like Prism.js or highlight.js if needed,
+        // ensuring it's configured correctly not to alter the code content.
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pradumon Sahani – Developer, Security Researcher, Tech Enthusiast</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a; /* Very dark background */
+            color: #e5e7eb; /* Light gray text */
+            line-height: 1.7;
+        }
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* Accent color */
+        .accent-color {
+            color: #ef4444; /* Red */
+        }
+        .bg-accent-color {
+             background-color: #ef4444; /* Red */
+        }
+        .border-accent-color {
+            border-color: #ef4444; /* Red */
+        }
+        .hover\:accent-color:hover {
+            color: #dc2626; /* Darker Red */
+        }
+        .hover\:bg-accent-dark:hover {
+            background-color: #dc2626; /* Darker Red */
+        }
+
+        /* Simple Button style */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.75rem; /* Slightly larger padding */
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 600; /* Bolder */
+            text-align: center;
+            text-transform: uppercase; /* Uppercase text like image */
+            letter-spacing: 0.05em; /* Slight letter spacing */
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
+            border: 2px solid transparent; /* Start with transparent border */
+        }
+        .btn-primary {
+            background-color: #ef4444; /* Red */
+            color: #ffffff; /* White text */
+            border-color: #ef4444;
+        }
+        .btn-primary:hover {
+            background-color: #dc2626; /* Darker Red */
+            border-color: #dc2626;
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: #ef4444; /* Red text */
+            border: 2px solid #ef4444; /* Red border */
+        }
+        .btn-secondary:hover {
+            background-color: rgba(239, 68, 68, 0.1); /* Slight red bg */
+            color: #f87171; /* Lighter red text */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        /* Section Padding */
+        section {
+            padding-top: 6rem; /* More vertical space */
+            padding-bottom: 6rem;
+        }
+        #home {
+             padding-top: 8rem; /* More space for hero */
+        }
+
+        /* Link styling */
+        a {
+            transition: color 0.2s ease;
+        }
+        /* Header Styling */
+        header {
+            border-bottom: 1px solid #1f2937; /* Slightly visible border */
+        }
+        .nav-link {
+             position: relative;
+             padding-bottom: 4px; /* Space for underline */
+        }
+        .nav-link::after {
+             content: '';
+             position: absolute;
+             bottom: 0;
+             left: 0;
+             width: 0;
+             height: 2px;
+             background-color: #ef4444; /* Red */
+             transition: width 0.3s ease;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after { /* Add 'active' class via JS if needed */
+             width: 100%;
+        }
+
+        /* Mobile Menu Simple */
+        #mobile-menu {
+            display: none;
+            background-color: #111827; /* Slightly off-black */
+        }
+        #mobile-menu.show {
+            display: block;
+        }
+
+        /* Section Title Styling */
+        .section-title {
+            font-size: 2.25rem; /* Larger titles */
+            font-weight: 800; /* Extra bold */
+            margin-bottom: 3rem; /* More space below title */
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+         .section-title::after { /* Underline effect for titles */
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px; /* Width of the underline */
+            height: 3px; /* Thickness */
+            background-color: #ef4444; /* Red */
+            border-radius: 2px;
+        }
+        /* Specific override for left-aligned title */
+        .section-title-left {
+            text-align: left;
+            padding-left: 0;
+            margin-left: 0;
+        }
+        .section-title-left::after {
+             left: 0;
+             transform: translateX(0);
+        }
+
+
+        /* Skill bar */
+        .skill-bar-bg {
+            background-color: #374151; /* Dark gray background */
+            border-radius: 9999px;
+            overflow: hidden;
+            height: 8px; /* Slimmer bar */
+        }
+        .skill-bar-fill {
+            background-color: #ef4444; /* Red fill */
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 1s ease-in-out; /* Animate width */
+        }
+
+        /* Simple Card */
+        .simple-card {
+             background-color: #111827; /* Slightly off-black */
+             padding: 1.5rem;
+             border-radius: 0.5rem;
+             border: 1px solid #374151; /* Subtle border */
+        }
+        /* Bug Hunter Link Style */
+        .bug-hunter-link {
+             display: inline-block;
+             margin-left: 0.5rem;
+             font-size: 0.8rem;
+             font-weight: 500;
+             color: #9ca3af; /* Gray */
+             border: 1px solid #4b5563; /* Darker Gray border */
+             padding: 0.1rem 0.4rem;
+             border-radius: 0.25rem;
+             transition: all 0.2s ease;
+        }
+        .bug-hunter-link:hover {
+             color: #e5e7eb; /* Lighter gray */
+             border-color: #6b7280;
+             background-color: #374151;
+        }
+        .bug-hunter-link i { /* Icon margin */
+            margin-right: 0.2rem;
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="text-2xl font-bold text-white hover:accent-color tracking-wide">
+                PRADUMON <span class="accent-color">.</span> </a>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="nav-link text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wider">Home</a>
+                <a href="#about" class="nav-link text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wider">About</a>
+                <a href="#skills" class="nav-link text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wider">Skills</a>
+                <a href="#projects" class="nav-link text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wider">Projects</a>
+                <a href="#blog" class="nav-link text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wider">Blog</a>
+                <a href="#contact" class="nav-link text-gray-300 hover:text-white text-sm font-medium uppercase tracking-wider">Contact</a>
+            </div>
+
+            <div class="md:hidden">
+                <button id="menu-toggle" class="text-gray-300 hover:accent-color focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="md:hidden absolute top-full left-0 w-full shadow-lg rounded-b-md overflow-hidden border-t border-gray-700">
+            <div class="flex flex-col px-6 py-4 space-y-4">
+                 <a href="#home" class="block text-gray-300 hover:accent-color font-medium">Home</a>
+                 <a href="#about" class="block text-gray-300 hover:accent-color font-medium">About</a>
+                 <a href="#skills" class="block text-gray-300 hover:accent-color font-medium">Skills</a>
+                 <a href="#projects" class="block text-gray-300 hover:accent-color font-medium">Projects</a>
+                 <a href="#blog" class="block text-gray-300 hover:accent-color font-medium">Blog</a>
+                 <a href="#contact" class="block text-gray-300 hover:accent-color font-medium">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-6">
+
+        <section id="home" class="min-h-[80vh] flex flex-col md:flex-row items-center justify-between gap-12">
+            <div class="md:w-1/2 text-center md:text-left">
+                <span class="text-red-500 font-semibold uppercase tracking-widest text-sm">Hello!</span>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold my-3 leading-tight text-white">
+                    I'm Pradumon <span class="accent-color">Sahani</span>
+                </h1>
+                <h2 class="text-xl md:text-2xl text-gray-400 mb-8 font-medium">
+                    Developer & Security Researcher
+                </h2>
+                <p class="text-gray-400 mb-10 max-w-lg mx-auto md:mx-0">
+                    Passionate about exploring the depths of computer science, cybersecurity, and electronics. Sharing my journey and discoveries.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-3 sm:space-y-0 sm:space-x-4">
+                    <a href="#projects" class="btn btn-primary">My Works</a>
+                    <a href="#contact" class="btn btn-secondary">Hire Me</a> </div>
+            </div>
+            <div class="md:w-1/2 flex justify-center md:justify-end mt-10 md:mt-0">
+                 <img src="profile.jpg" alt="Pradumon Sahani" class="rounded-lg shadow-xl w-3/4 md:w-full max-w-sm object-cover border-4 border-gray-700">
+                 </div>
+        </section>
+
+        <section id="about" class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+             <div class="md:w-5/12 flex justify-center">
+                 <img src="profile.jpg" alt="About Pradumon Sahani" class="rounded-lg shadow-xl w-3/4 md:w-full max-w-xs object-cover border-4 border-gray-700">
+                 </div>
+            <div class="md:w-7/12 text-center md:text-left">
+                 <h2 class="section-title section-title-left"> About Me
+                 </h2>
+                 <p class="text-gray-300 mb-6 text-lg">
+                    A dedicated and curious Class 12 student diving deep into the realms of technology.
+                 </p>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-gray-400 mb-8 text-sm">
+                     <div><strong class="text-white font-medium mr-2">Name:</strong> Pradumon Sahani</div>
+                     <div><strong class="text-white font-medium mr-2">Status:</strong> Class 12 Student</div>
+                     <div><strong class="text-white font-medium mr-2">Interests:</strong> Coding, Security, Electronics</div>
+                     <div><strong class="text-white font-medium mr-2">Highlight:</strong> $3000 Meta Bug Bounty</div>
+                     <div><strong class="text-white font-medium mr-2">Location:</strong> Based in India <span class="text-xs text-gray-500"></span></div>
+                    <div><strong class="text-white font-medium mr-2">Email:</strong> <a href="mailto:pradumon@outlook.in" class="hover:accent-color">Pradumon@outlook.in</a></div>
+                 <p>
+                    My main interests lie in <strong class="text-white">coding</strong>, uncovering vulnerabilities through <strong class="text-white">cybersecurity research</strong>, and tinkering with <strong class="text-white">electronics</strong>. I thrive on challenges and continuously seek to expand my knowledge. A notable achievement includes receiving a <strong class="font-medium accent-color">$3000 Bug Bounty from Meta</strong> for identifying a vulnerability in WhatsApp. 
+                </p>
+                <p> 
+                    <a href="https://m.facebook.com/whitehat/profile/61572884593296/?wtsid=rdr_0lsmf4CW1MXk448wW" target="_blank" rel="noopener noreferrer" class="bug-hunter-link">
+                        <i class="fab fa-facebook"></i> Meta Whitehat
+                    </a>
+                     <a href="https://bughunters.google.com/profile/abba5b43-e913-4782-b8d7-8c12937d776e" target="_blank" rel="noopener noreferrer" class="bug-hunter-link">
+                        <i class="fab fa-google"></i> Google Bug Hunters
+                    </a> 
+                </p>
+                 </div>
+                 <div class="flex justify-center md:justify-start space-x-4">
+                    <a href="#contact" class="btn btn-secondary">Contact Me</a>
+                 </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2 class="section-title">My <span class="accent-color">Skills</span></h2>
+            <p class="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+                Constantly learning and improving my capabilities in various areas of technology. Here's a snapshot of my current skillset.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-4xl mx-auto">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-medium text-white">Web Development (HTML, CSS, JS)</span>
+                        <span class="text-sm font-medium accent-color">85%</span>
+                    </div>
+                    <div class="skill-bar-bg">
+                        <div class="skill-bar-fill" style="width: 85%;"></div>
+                    </div>
+                </div>
+                 <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-medium text-white">Cybersecurity Concepts</span>
+                        <span class="text-sm font-medium accent-color">65%</span>
+                    </div>
+                    <div class="skill-bar-bg">
+                        <div class="skill-bar-fill" style="width: 65%;"></div>
+                    </div>
+                </div>
+                 <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-medium text-white">Python Programming</span>
+                        <span class="text-sm font-medium accent-color">80%</span>
+                    </div>
+                    <div class="skill-bar-bg">
+                        <div class="skill-bar-fill" style="width: 80%;"></div>
+                    </div>
+                </div>
+                 <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-medium text-white">Bug Bounty Hunting</span>
+                        <span class="text-sm font-medium accent-color">70%</span>
+                    </div>
+                    <div class="skill-bar-bg">
+                        <div class="skill-bar-fill" style="width: 70%;"></div>
+                    </div>
+                </div>
+                 <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-medium text-white">Electronics Basics (Arduino)</span>
+                        <span class="text-sm font-medium accent-color">60%</span>
+                    </div>
+                    <div class="skill-bar-bg">
+                        <div class="skill-bar-fill" style="width: 60%;"></div>
+                    </div>
+                </div>
+                 <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-medium text-white">Problem Solving</span>
+                        <span class="text-sm font-medium accent-color">80%</span>
+                    </div>
+                    <div class="skill-bar-bg">
+                        <div class="skill-bar-fill" style="width: 80%;"></div>
+                    </div>
+                </div>
+                </div>
+        </section>
+
+        <section id="projects">
+            <h2 class="section-title">Featured <span class="accent-color">Projects</span></h2>
+             <p class="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+                A selection of work demonstrating my skills and interests. More projects available on my GitHub.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="simple-card transform transition duration-300 hover:scale-105 hover:shadow-lg hover:border-red-500/30">
+                    <h3 class="text-lg font-semibold text-white mb-2">Project Title 1</h3>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Brief description of the project, its goals, and key features. [baad mein add karunga]
+                    </p>
+                    <p class="text-xs text-gray-500 mb-3">Tech: Python, Nmap API</p>
+                    <div>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-sm accent-color hover\:accent-color font-medium">View Code <i class="fab fa-github fa-xs ml-1"></i></a>
+                    </div>
+                </div>
+
+                <div class="simple-card transform transition duration-300 hover:scale-105 hover:shadow-lg hover:border-red-500/30">
+                     <h3 class="text-lg font-semibold text-white mb-2">Project Title 2 </h3>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Building a personal website to showcase skills and projects (like this one!).
+                    </p>
+                    <p class="text-xs text-gray-500 mb-3">Tech: HTML, Tailwind CSS</p>
+                     <div>
+                        <a href="https://github.com/Pradumon14" target="_blank" rel="noopener noreferrer" class="text-sm accent-color hover\:accent-color font-medium">View on GitHub <i class="fab fa-github fa-xs ml-1"></i></a>
+                        </div>
+                </div>
+
+                <div class="simple-card transform transition duration-300 hover:scale-105 hover:shadow-lg hover:border-red-500/30">
+                     <h3 class="text-lg font-semibold text-white mb-2">Project Title 3 (e.g., Arduino Experiment)</h3>
+                    <p class="text-gray-400 text-sm mb-3">
+                        An exploration into basic electronics using Arduino, sensors, and actuators.
+                    </p>
+                    <p class="text-xs text-gray-500 mb-3">Tech: Arduino, C++, Sensors</p>
+                     <div>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="text-sm accent-color hover\:accent-color font-medium">Read Blog Post <i class="fas fa-book-open fa-xs ml-1"></i></a>
+                    </div>
+                </div>
+                </div>
+        </section>
+
+        <section id="blog">
+            <h2 class="section-title">My <span class="accent-color">Blog</span></h2>
+             <p class="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+                Sharing insights, tutorials, and stories from my adventures in cybersecurity, coding, and technology.
+            </p>
+            <div class="space-y-8 max-w-3xl mx-auto">
+                <div class="simple-card flex flex-col sm:flex-row gap-6 items-center transform transition duration-300 hover:bg-gray-800/50">
+                    <div class="flex-1 text-center sm:text-left">
+                        <p class="text-xs text-gray-500 mb-1">Date (e.g., May 2, 2025)</p>
+                        <h3 class="text-lg font-semibold text-white mb-2">
+                            <a href="blog-post-whatsapp-bounty.html" class="hover:accent-color">
+                                How I Found My First $3000 Bug Bounty in WhatsApp
+                            </a>
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-3">
+                            Sharing the story behind discovering a vulnerability in WhatsApp, the process involved, and key takeaways...
+                        </p>
+                        <a href="blog-post-whatsapp-bounty.html" class="text-sm accent-color hover\:accent-color font-medium">Read More &rarr;</a>
+                    </div>
+                </div>
+            </div>
+                 
+        </section>
+
+        <section id="contact">
+            <h2 class="section-title">Contact <span class="accent-color">Me</span></h2>
+             <p class="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+                Have a question, an opportunity, or just want to say hi? Feel free to reach out. I'm open to collaborations and freelance inquiries.
+            </p>
+            <div class="max-w-xl mx-auto simple-card">
+                 <div class="space-y-4 text-center">
+                     <p>
+                         <i class="fas fa-envelope accent-color mr-2"></i>
+                         <a href="mailto:pradumon@outlook.in" class="text-gray-300 hover:accent-color">Pradumon@outlook.in</a>
+                         <span class="text-gray-500 text-xs block">Pradumon@outlook.in</span>
+                     </p>
+                     <p>
+                         <i class="fas fa-map-marker-alt accent-color mr-2"></i>
+                         <span class="text-gray-400">India (Remote Availability)</span>
+                     </p>
+                      <div class="pt-4 flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
+                        <a href="https://instagram.com/Pradumon14" target="_blank" rel="noopener noreferrer" title="Instagram" class="text-gray-400 hover:accent-color text-xl transition duration-300 transform hover:scale-125">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://t.me/Pradumon14" target="_blank" rel="noopener noreferrer" title="Telegram" class="text-gray-400 hover:accent-color text-xl transition duration-300 transform hover:scale-125">
+                            <i class="fab fa-telegram-plane"></i>
+                        </a>
+                        <a href="https://github.com/Pradumon14" target="_blank" rel="noopener noreferrer" title="GitHub" class="text-gray-400 hover:accent-color text-xl transition duration-300 transform hover:scale-125">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://m.facebook.com/whitehat/profile/61572884593296/?wtsid=rdr_0lsmf4CW1MXk448wW" target="_blank" rel="noopener noreferrer" title="Meta Whitehat Profile" class="text-gray-400 hover:accent-color text-xl transition duration-300 transform hover:scale-125">
+                            <i class="fab fa-facebook"></i> </a>
+                         <a href="https://bughunters.google.com/profile/abba5b43-e913-4782-b8d7-8c12937d776e" target="_blank" rel="noopener noreferrer" title="Google Bug Hunters Profile" class="text-gray-400 hover:accent-color text-xl transition duration-300 transform hover:scale-125">
+                            <i class="fab fa-google"></i> </a>
+                    </div>
+                 </div>
+
+                 </div>
+        </section>
+
+    </div> <footer class="border-t border-gray-800 mt-16 bg-gray-900/50">
+        <div class="container mx-auto px-6 py-6 text-center">
+            <a href="#home" class="text-xl font-bold text-white hover:accent-color tracking-wide mb-3 inline-block">
+                PRADUMON <span class="accent-color">.</span>
+            </a>
+            <p class="text-gray-500 text-sm mb-3">
+                Developer <span class="accent-color mx-1">&bull;</span> Security Researcher <span class="accent-color mx-1">&bull;</span> Tech Enthusiast
+            </p>
+            <p class="text-gray-600 text-xs">
+                 &copy; <span id="current-year"></span> Pradumon Sahani. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelectorAll('#mobile-menu a'); // Select only links within the mobile menu
+
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('show');
+            // Change burger icon to 'X' when menu is open
+            const icon = menuToggle.querySelector('i');
+            if (mobileMenu.classList.contains('show')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Close mobile menu when a link is clicked
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                 if (mobileMenu.classList.contains('show')) {
+                    mobileMenu.classList.remove('show');
+                    // Reset icon
+                    const icon = menuToggle.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                 }
+            });
+        });
+
+        // Set Current Year in Footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        
+    </script>
+
+</body>
+</html>
